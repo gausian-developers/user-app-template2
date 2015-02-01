@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+  <script src="https://rawgit.com/gausian-developers/asa-client-js/master/asa-client.js"></script>
+  <meta charset="utf-8">
+  <title>APP Template 1</title>
+</head>
+<body>
+
+  <h2>ASA client JS - Example 1</h2>
+
+  <h4>Code:</h4>
+  ASA.request('GET:customer_id,company_name;ON:customer_id<[4];LIMIT:2;@CustomerDataReadWrite', callback);
+
+  <h4>Results:</h4>
+  <ul id="customer_list">
+
+  </ul>
+
+  <script type="text/javascript">
+
+  var customer_array = [];
+
+  ASA.init('CustomerDataReadWrite', '0000000x0');
+  ASA.request('GET:customer_id,company_name;ON:customer_id<[4];LIMIT:2;@CustomerDataReadWrite', function (data, error) {
+    if (error) {
+      console.error('Opps! We have a glitch with ASA server connection' + error);
+    }
+    if (data.response_code === 1) { // success
+      customer_array = JSON.parse(data.response);
+      customer_array.forEach(function (customer) {
+        var node = $('<li>'+ customer.customer_id + ', ' + customer.company_name + '</li>');
+        $('#customer_list').append(node);
+      });
+    } else {
+      console.error('ASA Error[' + data.response_code + ']:' + data.response);
+    }
+  });
+  </script>
+
+</body>
+</html>
